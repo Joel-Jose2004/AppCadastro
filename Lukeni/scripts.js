@@ -1,52 +1,46 @@
 function replaceIconWithImage(event) {
-      const file = event.target.files[0];
-      const iconContainer = document.getElementById('imageIcon');
+  const file = event.target.files[0];
+  const iconContainer = document.getElementById('imageIcon');
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          // Limpa o conteúdo atual (ícone de câmera)
-          iconContainer.innerHTML = '';
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      // Limpa o conteúdo atual (ícone de câmera)
+      iconContainer.innerHTML = '';
 
-          // Cria um elemento de imagem e o insere no container
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          iconContainer.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+      // Cria um elemento de imagem e o insere no container
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      iconContainer.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+}
 
-    const save = document.getElementById('botao');
+const save = document.getElementById('botao');
 
-    save.addEventListener('click', () =>{
+save.addEventListener('click', () => {
+  let valor1 = [];
+  // Carregar dados existentes do localStorage
+  if (localStorage.hasOwnProperty("valor1")) {
+    valor1 = JSON.parse(localStorage.getItem("valor1"));
+  }
 
-      const nome = document.getElementById('nome').value;
-      const data = document.getElementById('data').value;
-      const imageInput = document.getElementById('imageInput');
+  const nome = document.getElementById('nome').value;
+  const data = document.getElementById('data').value;
+  const imageInput = document.getElementById('imageInput').files[0];
 
+  if (imageInput) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const id = valor1.length + 1; // Incrementar ID com base na quantidade de registros
+      valor1.push({ id, nome, data, imagem: e.target.result }); // Adiciona ao array
+      localStorage.setItem('valor1', JSON.stringify(valor1)); // Salva o array no localStorage
 
-      let nomes = JSON.parse(localStorage.getItem('nomes')) || [];
-      nomes.push(nome);
-      localStorage.setItem('nomes', JSON.stringify(nomes));
-      let datas = JSON.parse(localStorage.getItem('datas')) || [];
-      datas.push(data);
-      localStorage.setItem('datas', JSON.stringify(datas));
-
-      const file = imageInput.files[0];
-      if (!file) {
-        alert('Por favor, selecione uma imagem!');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-            let images = JSON.parse(localStorage.getItem('images')) || [];
-            images.push(e.target.result);
-            localStorage.setItem('images', JSON.stringify(images));
-      };
-      reader.readAsDataURL(file); 
-    });
-
-      console.log('Dados salvos com sucesso!');
-  
+      console.log('Dados salvos com sucesso!'); // Mensagem de sucesso aqui
+    };
+    reader.readAsDataURL(imageInput); // Ler a imagem selecionada
+  } else {
+    alert('Por favor, selecione uma imagem!');
+  }
+});
